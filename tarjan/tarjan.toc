@@ -1,0 +1,14 @@
+\contentsline {section}{\numberline {1}DFS tree}{1}{section.1}%
+\contentsline {subsection}{\numberline {1.1}概念}{1}{subsection.1.1}%
+\contentsline {section}{\numberline {2}連通}{3}{section.2}%
+\contentsline {paragraph}{嚴格定義}{3}{section*.2}%
+\contentsline {section}{\numberline {3}連通圖}{3}{section.3}%
+\contentsline {paragraph}{定義}{3}{section*.3}%
+\contentsline {section}{\numberline {4}連通分量}{3}{section.4}%
+\contentsline {subsection}{\numberline {4.1}邊雙連通分量/橋}{3}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}點雙連通分量/割點}{3}{subsection.4.2}%
+\contentsline {section}{\numberline {5}Tarjan}{4}{section.5}%
+\contentsline {subsection}{\numberline {5.1}無向圖/BCC}{4}{subsection.5.1}%
+\contentsline {paragraph}{性質解釋}{4}{section*.5}%
+\contentsline {subsection}{\numberline {5.2}有向圖/SCC}{6}{subsection.5.2}%
+\contentsline {section}{\numberline {6}Korasaju's algorithm}{6}{section.6}%

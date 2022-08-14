@@ -1,0 +1,74 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+mt19937 rd(time(NULL));
+struct treap {
+	struct  node {
+		node *l, *r;
+		int val, sz;
+		int pri;
+
+		node( int k ) {l=r=nullptr; val=k; sz=1; pri=rd();} 
+		void pull() {sz = (l?l->sz:0) + (r?r->sz:0) + 1;}
+	}*root=nullptr;
+
+	int size(node*cur) {return (cur?cur->sz:0);}
+	node* merge( node*&a, node*&b ) { //a < b
+		if( !a || !b ) return (a?a:b);
+		if( a->pri > b->pri ) 
+			return a->r=merge(a->r, b),a;
+		else 
+			return b->l=merge(a, b->l), b;
+	}
+	void split(node*cur, node*&a, node*&b, int k) {
+		if( !cur ) {a = b = nullptr; return;}
+		if( cur->val < k ) {
+			a = cur;
+			split( cur->r, a->r, b, k);
+		}
+		else {
+			b = cur;
+			split( cur->l, a, b->l, k);
+		}
+	}
+
+	void ssplit(node*cur, node*&a, node*&b, int kth ) {
+		if( !cur ) {a = b = nullptr; return;}
+		if( size(cur->l)+1 <= kth ) {
+			kth -= size(cur->l)+1;
+			a = cur;
+			ssplit( cur->r, a->r, b, kth);
+		}	
+		else {
+			b = cur;
+			ssplit( cur->l, a, b->l, kth);
+		}
+	}
+
+	void insert( node*&cur, int k ) {
+		node*a, *b;
+		a = b = nullptr;
+		split( cur, a, b, k );
+		cur = merge( a, merge( new node( k ), b ));
+	};
+
+	int kth( node*&cur, int kth ) {
+		node*a, *b, *c;
+		a = b = c = nullptr;
+		ssplit( cur, a, b, kth);
+		ssplit( a, a, c, kth-1);
+
+		return cur=merge( merge(a, c), b ),c->val;
+	};
+
+
+};
+int main () {
+	int T; cin >> T;
+	treap t;
+	for( int i = 0; i < T; ++i ) {
+		int a, b;
+		t.insert(a);
+		cout << t.kth(b) << '\n';
+	}
+}

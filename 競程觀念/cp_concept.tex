@@ -1,0 +1,280 @@
+\documentclass[12pt,oneside]{article}
+\usepackage{xeCJK}
+\xeCJKsetup{AutoFakeBold=true, AutoFakeSlant=true}
+\setCJKmainfont{新細明體}
+\setmainfont{Times New Roman}
+%\setmainfont{標楷體}
+%\usepackage{ctex}
+
+\usepackage{bbding} %打勾叉
+\usepackage{xcolor}
+\usepackage{amsmath} %數學庫
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage{fancyhdr} %排版用，頁數
+\usepackage[colorlinks=true, linkcolor=black, citecolor=black, urlcolor=blue]{hyperref}
+
+\usepackage{graphicx} %插入图片的宏包
+\usepackage{float} %设置图片浮动位置的宏包
+\usepackage{subfigure} %插入多图时用子图显示的宏包
+\usepackage{chngpage}
+\usepackage{emptypage}
+
+
+\usepackage[margin=2cm]{geometry} %上下左右的流空
+\usepackage{diagbox} %表格的斜線標題
+
+\usepackage{spacingtricks} %表格間距
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+
+%------ c++顏色 (我不會 :poop:)) ---- %
+\usepackage{listings}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{
+	numbers=left,  
+	frame=tb,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	framerule=1pt,
+	rulecolor=\color{gray!35},
+	backgroundcolor=\color{gray!5},
+	basicstyle={\ttfamily},
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=3,
+}
+%原文链接：https://blog.csdn.net/weixin_50012998/article/details/109455978
+%------ c++顏色 (我不會 :poop:)) ---- %
+%--------------------color---------------------------%
+\definecolor{group_color_1}{HTML}{1D4765}
+\definecolor{group_color_2}{HTML}{E5e6e1}
+\definecolor{group_color_3}{HTML}{A7d1d9}
+\definecolor{group_color_4}{HTML}{bebbb7}
+
+\definecolor{TreeEdge}{HTML}{1B998B}
+\definecolor{BackEdge}{HTML}{4E6EE4}
+\definecolor{CrossEdge}{HTML}{8544DA}
+\definecolor{ForwardEdge}{HTML}{534d56}
+
+%--------------------color---------------------------%
+
+
+%畫流程圖
+\usepackage{tikz, mathpazo}
+\usetikzlibrary{shapes.geometric, arrows}
+\usetikzlibrary{shapes, shapes.multipart}
+\usetikzlibrary{calc, positioning}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{fit}
+
+
+\renewcommand{\baselinestretch}{1.5}
+\renewcommand{\contentsname}{目錄}
+
+\title{ 競程觀念 }
+\author{ 進階教學組 }
+\date{ \today }
+
+
+%----------------初始化------------------%
+
+
+%---------縮放------------%
+\tikzset{global scale/.style={
+    scale=#1,
+    every node/.append style={scale=#1}
+  }
+}
+\tikzset{Decision_shape/.style={
+    trapezium, draw, trapezium left angle=60,
+    trapezium right angle=-60
+}
+}
+
+\tikzset{
+    basic box/.style = {
+        shape=rectangle,
+        align=center, 
+        draw=#1,
+        dashed,
+        thick, 
+        rounded corners
+    }
+}
+
+%---------縮放------------%
+
+
+
+%--------流程圖樣式---------------%
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered,text=white, draw=black, fill=group_color_1, text width=3cm]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=group_color_2, text width=3cm]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=group_color_3, text width=3cm]
+\tikzstyle{decision} = [Decision_shape, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=group_color_4, text width=3cm]
+%--------流程圖樣式---------------%
+
+%------ 圖論樣式 ------ %
+\tikzstyle{node} = [circle, minimum width=0cm, minimum height=0cm, text centered, draw]
+\tikzstyle{arrow} = [->, thick]
+%------ 圖論樣式 ------ %
+
+
+%---------設置最大節點䥗度------------%
+\tikzset {
+MaxWidth3/.style={
+    text width=3cm
+}
+}
+%---------設置最大節點䥗度------------%
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+\clearpage
+
+\tableofcontents
+\setcounter{page}{0}
+
+\clearpage
+\pagestyle{fancy}
+\rhead{程式考試、競賽觀念}
+
+\section{賽制介紹}
+
+\begin{center}
+\begin{tabular}{|l|*{4}{|c}|} 
+    \hline
+    \diagbox{賽制}{特性} & 賽中評測 &　排名 & 懲罰(penaty) & 比賽、考試 \\\hline
+    ACM & \Checkmark & \Checkmark & \Checkmark  & \href{https://codeforces.com/}{codeforces}\\\hline
+    OI & \XSolidBrush & \XSolidBrush & \XSolidBrush & \href{https://apcs.csie.ntnu.edu.tw/}{APCS} \\\hline
+    IOI & \Checkmark & $\Delta$ & \XSolidBrush  & TOI \\\hline
+\end{tabular}
+\end{center}
+
+
+% 賽中評測 是否可以看到排名 懲罰(penaty)
+% ACM 
+% OI
+% IOI
+%
+
+
+ 
+
+\section{需掌握的知識}
+
+\subsection{APCS}
+%\href{https://apcs.csie.ntnu.edu.tw/index.php/questionstypes/}{考試範圍}
+\begin{enumerate}
+    \item 初階班的所有東西
+    \item 函數呼叫與遞迴
+    \item 基礎資料結構
+        \begin{itemize}
+            \item queues
+            \item stacks
+            \item tree
+            \item graph
+        \end{itemize}
+    \item 基礎演算法
+    \begin{itemize}
+        \item sorting
+        \item searching
+        \item greedy
+        \item dynamic programming
+    \end{itemize}
+\end{enumerate}
+%，字串 (string)
+%函數呼叫與遞迴 (function call and recursion)
+%基礎資料結構 (basic data structures)，包括：佇列 (queues)，堆疊 (stacks)，樹狀圖 (tree)，圖形 (graph)
+%基礎演算法 (basic algorithms)，包括：排序 (sorting)，搜尋 (searching)，貪心法則 (greedy method),
+%動態規劃 (dynamic programming)
+
+\subsection{IOI/TOI}
+這個就什麼都不嫌多，
+因為可能有些人的目標不是這個，
+所以就有興趣的再來找我，
+我可以請學長教我們。
+
+\section{團體必賽的工作分配}
+如果是要比\href{https://contest.cc.ntu.edu.tw/npsc2021/}{NPSC}或著是\href{https://www.tw-ytp.org/}{YTP}這類需要組隊的比賽時，
+分工就會變得很重要，
+借用\href{https://hackmd.io/HAShR4J-Q7yhRWboqvLPJA?view}{前一屆的整理}，
+通常會需要有\\
+\begin{enumerate}
+    \item 一個打code的人
+    \item 一個算數學的人
+    \item 一個通靈的人
+\end{enumerate}
+
+\subsection{打\textbf{code}}
+就需要把抽象的解題方式化為具體的程式碼，
+通常打字速度要足夠快，
+大概$6, 70$左右應該就足以應付了。
+在打code的時候要盡量的讓其他人能夠看懂，
+所以對於一些地方可能需要著墨一下，
+像是\textbf{函式化編程}抑或是\textbf{變數名稱}還有\textbf{宏樣式}，
+都需要先跟隊友討論過，
+確保在比賽的時候不會出現問題。
+
+\subsection{算數學}
+對於每一個比賽，
+通常都會有數論題，
+算數學的就是需要把數論題解決，
+無論是觀察性質亦或是簡化計算，
+都可以由算數學的來完成，
+有時候也可以透過一些數學的公式抑或是證明來讓複雜度減少。
+
+\subsection{通靈}
+比賽時，
+常常會出現一些優美的做法，
+可能可以一下子讓複雜度下降一個量級，
+從$NA0\%$直接變$AC100\%$，
+這就是通靈的工作，
+他需要想出題目的解法，
+然後把他表示給數學家，
+確認正確性以後再交給coder打出來。
+可能需要比較天馬行空一些，
+抑或著練過了許多題目，
+可以快速的抓出題目的特性。
+
+\section{如何debug}
+\subsection{黃色鴨鴨法}
+如同字面意思，
+你可以想像自己面前有一個黃色鴨鴨，
+就對鴨鴨講述你的解法和每個code區間的作用，
+不用擔心講的很爛，
+黃色鴨鴨很有包容心的。
+
+使用黃色鴨鴨法可以讓你重新整理自己的思緒，
+跟費曼學習法有一曲同工之妙，
+只要熟練掌握，
+相信無論在哪裡都會很實用的。
+
+\subsection{追蹤變數}
+你可以把程式的變數輸出出來看是否符合正確的過程，
+如果發現錯誤你就可以開始\textbf{二分搜}錯誤的地方，
+這通常花費的時間比較多一些，
+
+為了節省時間，
+你可以把輸出變成一個函式。
+不過這需要用到\textbf{template}，
+所以就先放到以後了。
+
+
+\section{引用文章}
+\href{https://zhuanlan.zhihu.com/p/129311302}{编程比赛三大赛制介绍（ACM赛制、OI赛制、IOI赛制）}
+\href{https://web.ntnu.edu.tw/~algo/Activity.html}{演算法筆記}
+
+
+\end{document}
+
+

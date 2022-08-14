@@ -1,0 +1,478 @@
+\documentclass[12pt,oneside]{article}
+\usepackage{xeCJK}
+\xeCJKsetup{AutoFakeBold=true, AutoFakeSlant=true}
+\setCJKmainfont{新細明體}
+\setmainfont{Times New Roman}
+%\setmainfont{標楷體}
+%\usepackage{ctex}
+
+\usepackage{xcolor}
+\usepackage{amsmath} %數學庫
+\usepackage{setspace}
+\usepackage{fancyhdr} %排版用，頁數
+\usepackage[colorlinks=true, linkcolor=black, citecolor=black, urlcolor=blue]{hyperref}
+
+\usepackage{graphicx} %插入图片的宏包
+\usepackage{float} %设置图片浮动位置的宏包
+\usepackage{subfigure} %插入多图时用子图显示的宏包
+\usepackage{chngpage}
+\usepackage{emptypage}
+
+
+\usepackage[margin=2cm]{geometry} %上下左右的流空
+\usepackage{diagbox} %表格的斜線標題
+
+\usepackage{spacingtricks} %表格間距
+
+%------ c++顏色 (我不會 :poop:)) ---- %
+\usepackage{listings}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{
+	numbers=left,  
+	frame=tb,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	framerule=1pt,
+	rulecolor=\color{gray!35},
+	backgroundcolor=\color{gray!5},
+	basicstyle={\ttfamily},
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=3,
+}
+%原文链接：https://blog.csdn.net/weixin_50012998/article/details/109455978
+%------ c++顏色 (我不會 :poop:)) ---- %
+%--------------------color---------------------------%
+\definecolor{group_color_1}{HTML}{1D4765}
+\definecolor{group_color_2}{HTML}{E5e6e1}
+\definecolor{group_color_3}{HTML}{A7d1d9}
+\definecolor{group_color_4}{HTML}{bebbb7}
+
+\definecolor{TreeEdge}{HTML}{1B998B}
+\definecolor{BackEdge}{HTML}{4E6EE4}
+\definecolor{CrossEdge}{HTML}{8544DA}
+\definecolor{ForwardEdge}{HTML}{534d56}
+
+%--------------------color---------------------------%
+
+
+%畫流程圖
+\usepackage{tikz, mathpazo}
+\usetikzlibrary{shapes.geometric, arrows}
+\usetikzlibrary{shapes, shapes.multipart}
+\usetikzlibrary{calc, positioning}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{fit}
+
+
+\renewcommand{\baselinestretch}{1.5}
+\renewcommand{\contentsname}{目錄}
+
+\title{ Tarjan }
+\author{ 進階教學組 }
+\date{ \today }
+
+\begin{document}
+
+%----------------初始化------------------%
+
+
+%---------縮放------------%
+\tikzset{global scale/.style={
+    scale=#1,
+    every node/.append style={scale=#1}
+  }
+}
+\tikzset{Decision_shape/.style={
+    trapezium, draw, trapezium left angle=60,
+    trapezium right angle=-60
+}
+}
+
+\tikzset{
+    basic box/.style = {
+        shape=rectangle,
+        align=center, 
+        draw=#1,
+        dashed,
+        thick, 
+        rounded corners
+    }
+}
+
+%---------縮放------------%
+
+
+
+%--------流程圖樣式---------------%
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered,text=white, draw=black, fill=group_color_1, text width=3cm]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=group_color_2, text width=3cm]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=group_color_3, text width=3cm]
+\tikzstyle{decision} = [Decision_shape, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=group_color_4, text width=3cm]
+%--------流程圖樣式---------------%
+
+%------ 圖論樣式 ------ %
+\tikzstyle{node} = [circle, minimum width=0cm, minimum height=0cm, text centered, draw]
+\tikzstyle{arrow} = [->, thick]
+%------ 圖論樣式 ------ %
+
+
+%---------設置最大節點䥗度------------%
+\tikzset {
+MaxWidth3/.style={
+    text width=3cm
+}
+}
+%---------設置最大節點䥗度------------%
+
+
+
+
+%---------------初始化-------------------%
+\pagestyle{empty}
+\maketitle
+
+\thispagestyle{empty}
+
+\clearpage
+
+\tableofcontents
+\pagestyle{plain}
+\setcounter{page}{0}
+\clearpage
+
+\section{DFS tree}
+\subsection{概念}
+{\color{red}這並不是真正的一個tree}，
+\textbf{DFS tree}是一個在有向或無向圖中，
+把有成功進行到\textbf{DFS}的邊當成樹邊，
+然後變成 一棵樹 + 其他邊 的形式，
+所以依據選的根結點的不同、\textbf{DFS}順序不同，
+\textbf{DFS tree}也會跟著改變。
+
+在實作上，
+我們也不會特別的把他求出來，
+只是剛好在\textbf{DFS}的過程中他會出現而已，
+而且他的特性會比較方便之後的講解
+\vspace*{3em}
+\begin{lstlisting}[language=C++,escapeinside=``]
+func DFS_tree(node current) {
+    if current.isvisited : 
+        return;
+    
+    //edge.from = a, edge.to = b
+    for edge in edge_from_current :
+        if not edge.to.isvisited :
+            edge.to.is_tree_node <- true
+            DFS_tree( edge.to )
+        else   
+            edge.to.is_tree_node <- false
+}
+\end{lstlisting}
+\vspace*{3em}
+
+上文的虛擬碼是找出\textbf{DFS tree}的邊，
+因為實作不複雜而且概念也十分基本就不放完整程式碼。
+
+可以發現，
+圖上其實會有些邊沒有被選到，
+於是為了方便分類，
+人們幫這些沒有被選到的邊分了類並取了名字
+
+\begin{enumerate}
+    \item 
+        樹邊(Tree Edge): 在\textbf{DFS tree}上的邊
+    \item 
+        回邊(Back Edge): 從\textbf{子節點}連到\textbf{父節點}的邊
+    \item 
+        前向邊(Forward Edge): 從\textbf{父節點}連到\textbf{子結點的子樹結點}的邊
+    \item 
+        {\color{blue}交錯邊}(Cross Edge) : 連到兩個非祖孫關係的邊
+\end{enumerate}
+
+如果是無向圖的話就只會有 \textbf{Tree Edge} 跟 \textbf{ Back Edge }
+
+\vspace{1em}
+換個說法，
+你可以把\textbf{DFS tree}想像成一個族譜圖，
+把邊想像成認識的關係圖(有向邊就是 你認識他，但他不認識你，可能過年的時候很常出現)，
+以自身為節點的話如下。
+
+\begin{enumerate}
+    \item 樹邊: 我認識我的孩子
+    \item 回邊: 我認識輩分比我大的直系血親
+    \item 前向邊: 我認識輩分比我低兩輩以上的血親 
+    \item 交錯邊: 我認識我的旁系血親
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=2cm][H]
+\def\GlobalxShift{2cm}
+    \node (1) [node] {1};
+    \node (2) [node, below of=1] {2};
+    \node (3) [node, below of=2, xshift={-\GlobalxShift}] {3}; 
+    \node (4) [node, below of=3]{4};
+    \node (5) [node, below of=4]{5};
+
+    \node (6) [node, below of=2, xshift={\GlobalxShift}] {6}; 
+    \node (7) [node, below of=6]{7};
+
+    \node (8) [node, left of=1, xshift={-\GlobalxShift}] {7};
+
+    \draw [TreeEdge, arrow] (1) -- (2);
+    \draw [TreeEdge, arrow] (2) -- (3);
+    \draw [TreeEdge, arrow] (3) -- (4);
+    \draw [TreeEdge, arrow] (4) -- (5);
+    \draw [TreeEdge, arrow] (2) -- (6);
+    \draw [TreeEdge, arrow] (6) --node[anchor=west]{Tree} (7);
+
+    \draw[ CrossEdge, arrow] (8) --node[anchor=west]{Cross} (3);
+    \draw[ CrossEdge, arrow] (8) -- (5);
+
+    \draw[ BackEdge, arrow] (5) --node[anchor=west]{Back} (2);
+
+    \draw[ ForwardEdge, arrow] (1) --node[anchor=west]{Forward} (6);
+\end{tikzpicture}
+\end{figure}
+(圖片原形by建中)
+
+
+
+
+
+\clearpage
+\section{連通}
+\paragraph{嚴格定義}
+\begin{adjustwidth}{2em}{0em}
+    在一個無向圖中，
+    若從點$u$到點$v$間有路徑，
+    則稱他們是連通的。\\
+    在一個有向圖中，
+    若從點$u$到點$v$間有路徑，
+    \textbf{且邊皆同向}，
+    則稱他們是連通的。
+\end{adjustwidth}
+
+
+\section{連通圖}
+\paragraph{定義}
+
+\begin{adjustwidth}{2em}{0em}
+如果圖中任兩個點都是連通的我們稱他為連通圖，
+而有向圖還有分「強連通」跟「弱連通」，
+強連通是需保證$u -> v$ 跟 $v -> u $ 皆有路徑且邊為同向，
+而弱連通只要滿足其一即可。
+不過弱連通圖好像較少討論，所以接下來講的都是強連通圖。
+\end{adjustwidth}
+
+
+
+% \vspace*{1em}
+% 如果以上面的比喻來說的話，
+% 就是你們家族都是社交大師，
+% 不會出現只有一邊認識的情況，
+% 這時候對於任一個親戚可以獲得的情報網就是連通分量。
+
+% 有向圖其實還有分強連通跟弱連通，
+% 強連通是指如果$A$可以到$B$，則$B$也可以到$A$，兩個人都要彼此到達對方才算連通。
+% 弱連通則是即使$A$可以到$B$，$B$也不一定到$A$，只要有一個人可以到達對方就算連通。
+
+\section{連通分量}
+\subsection{邊雙連通分量/橋}
+\subsubsection*{橋的定義}
+\begin{adjustwidth}{2em}{0em}
+如果刪除一條邊時導致圖從\textbf{連通}$\implies$\textbf{不連通} 
+我們則把這條邊稱為橋。
+亦即每刪除一個橋，
+連通塊的數量都會增加。
+在把所有的橋都移去之後，
+我們就可以得到邊雙連通分量。
+為什麼他要叫邊雙連通呢?
+因為想要讓圖的連通塊增加就必須刪除兩個邊以上。
+\end{adjustwidth}
+
+
+
+\subsection{點雙連通分量/割點}
+
+\begin{adjustwidth}{2em}{0em}
+大致上和邊雙連通分量差不多，
+只是由刪除邊變成刪除點而已，
+而那個點稱為割點，
+如果把所有的割點都去掉之後我們就可以得到點雙連通分量。
+\end{adjustwidth}
+
+
+
+\clearpage
+\section{Tarjan}
+\subsection{無向圖/BCC}
+
+Tarjan 的無向圖比較簡單理解一些，
+因為無向圖有如下幾種性質
+\vspace*{1em}
+\begin{adjustwidth}{2em}{0em}
+\begin{enumerate}
+    \item 沒有\textbf{Cross Edge} 和 \textbf{Forward Edge}
+\end{enumerate}
+\end{adjustwidth}
+\vspace*{1em}
+
+\paragraph{性質解釋}
+\begin{adjustwidth}{2em}{0em}
+\begin{enumerate}
+    \item
+        因為無向圖在\textbf{DFS}時，
+        任兩個相鄰的點$u$ $v$的$t\_in$差距應該為$1$
+        顯然\textbf{Cross Edge}並不符合。
+\end{enumerate}
+\end{adjustwidth}
+
+如果知道了以上的性質，
+我們要如何找出所有的橋呢?
+首先，
+我們可以發現，
+% 條例式
+
+對於無向圖，
+我們只需要去考慮\textbf{Tree Edge}跟\textbf{Back Edge}。
+先不要一次想太多，
+那我們不妨從只有\textbf{Tree Edge}開始，
+之後再一個個的把\textbf{Back Edge}加回去。
+
+一開始，
+對於每一個\textbf{Tree Edge}都是橋，
+只要刪掉任何一個邊都會多出一個連通塊，
+此時，你會發現其實對於無向圖來說，
+{\color{red} 最終有大小大於2的連通塊=有環}。%證明
+因為沒有環就等於只有\textbf{Tree Edge}。
+而對於一個\textbf{Tree}來說，
+增加\textbf{Back Edge}就會出現\textbf{環}，
+讓我們來觀察一下\textbf{環}的性質，
+你可以發現，
+\textbf{環}會是\textbf{Back Edge}中間的那一條練。
+
+那要如何去維護呢，
+我們可以對每個點$u$紀錄一個$low$值，
+即他「從$u$或$u$的子孫最多走一次回邊(可以不走)，最高可以到達的點」。
+接下來講結論 : 「
+對於一條\textbf{Tree Edge} $e = (a, b)$ 而言，
+如果$low(b) = b$則代表$e$是橋
+」。
+
+因為把$e$移除掉之後。
+因為$low(b) = b$，代表其$a$的子孫最高只能走回$b$，
+所以如果這時把$e$移除掉的話，
+其子孫就沒有其他的方式可以走回$a$和其祖先了，
+表示$a$的子孫和原圖變得不連通了。
+
+
+實作時主要是用\textbf{DFS}+\textbf{進入戳記}。
+在實作時需要知道幾個觀念
+
+\begin{adjustwidth}{2em}{0em}
+\begin{enumerate}
+    \item 
+        \textbf{DFS}會先把所有子孫處理完才會繼續處理當前節點 \label{concept_1}
+    \item 
+        \textbf{DFS}中，
+        在沒有遇到分岔的情況下，
+        遍歷的順序總是一條條練。 \label{concept_2}
+    \item 
+        只有互為{\color{red} 直系親屬} 才可以使用進入戳記來判斷層樹高低，
+        不然如果先遞迴到的子樹其進入戳記會比後遞迴到的子樹小。 \label{concept_3}
+\end{enumerate}
+\end{adjustwidth}
+
+這部分可以自行隨意劃一個\textbf{DFS tree}實際手做遞迴一次。
+
+\vspace*{2em}
+\begin{center}
+    Algorithm: Tarjan BCC
+\end{center}
+\begin{lstlisting}[language=C++,escapeinside=``]
+Time_count = 0;
+Stack node_save;
+func Tarjan(node current) {
+    current.time_in, current.low <- Time_count
+    Time_count <- Time_count+1
+    node_save.push( current)
+
+    for edge in current.edge
+        if( not edge.to.isvisited )
+            Tarjan( edge.to )
+        else   
+            current.low = min( current.low, edge.low) 
+        
+    if( current.time_in == current.low ) 
+        node temp;
+        do {
+            temp = node_save.top()
+            bcc[ temp.id ] = current.id 
+            node_save.pop()
+        }
+        while(temp != current);
+}
+\end{lstlisting}
+\vspace*{2em}
+
+上面的code是球邊雙連通分量的，
+如果想要求點雙連通分量的話還需要多紀錄一個\textbf{fater}值。
+和球邊雙連通分量的程式碼差不多，
+只不過在對於$e=(a, b)$且$low( b ) = b$時，
+這時的割點會是$a$。
+
+\begin{lstlisting}[language=C++,escapeinside=``]
+func Tarjan( node current, node father)
+\end{lstlisting}
+
+\subsection{有向圖/SCC}
+
+有向圖大部分都和無向圖差不多，
+不過有向邊多了\textbf{Cross Edge}，
+所以\textbf{概念\ref{concept_3}}的部分可能會出現錯誤，
+因為\textbf{Cross Edge}會碰到沒有直系親屬關係的節點。
+那我們要如何去解決呢?
+
+十分的簡潔，
+在從結點$u$走到\textbf{low}函數更低的節點$v$時，
+我們可以先判斷$v$在不在\textbf{Stack}內。
+因為根據\textbf{觀念\ref{concept_1}}如果$v$是祖先，他一定還沒被踢出\textbf{Stack}，
+而且根據\textbf{觀念\ref{concept_2}}，
+如果$v$在別的子樹且還未被踢出\textbf{Stack}外的話，
+代表$[ v, LCA(u, v) )$以下的節點都已經被拜訪完了，
+也就是$u, v$會有共同的連通塊
+
+\textbf{Tarjan} 的複雜度只需要一次 \textbf{DFS} ， 所以為$O(V+E)$，
+$V$是點的個數，
+$E$是邊的個數。
+
+\section{Korasaju's algorithm}
+這個演算法相對簡單一些，
+他妥善的使用了強連通圖的定義「從$u->v$和$v->u$都有一條路徑且邊皆同向」。
+可以發現對於$SCC$來說，
+把邊翻轉並不會影響他的答案，
+所以如果我們有一個圖$G$，
+我們只需要把所有邊翻轉變成$G^{'}$。
+然後對$G$和$G^{'}$都做一次\textbf{DFS}判斷連通性，
+最後取交集即可。
+
+那無向圖呢?
+無向圖的邊沒有辦法翻轉啊?
+其實也是一樣的，
+只要把\textbf{Back Edge}當成有向的即可，
+反轉的時候會變成\textbf{Forward Edge}，
+之後的作法就和有向圖相同
+
+
+
+\end{document}

@@ -1,0 +1,12 @@
+\contentsline {section}{\numberline {1}賽制介紹}{1}{section.1}%
+\contentsline {section}{\numberline {2}需掌握的知識}{1}{section.2}%
+\contentsline {subsection}{\numberline {2.1}APCS}{1}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}IOI/TOI}{1}{subsection.2.2}%
+\contentsline {section}{\numberline {3}團體必賽的工作分配}{2}{section.3}%
+\contentsline {subsection}{\numberline {3.1}打\textbf {code}}{2}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}算數學}{2}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}通靈}{2}{subsection.3.3}%
+\contentsline {section}{\numberline {4}如何debug}{3}{section.4}%
+\contentsline {subsection}{\numberline {4.1}黃色鴨鴨法}{3}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}追蹤變數}{3}{subsection.4.2}%
+\contentsline {section}{\numberline {5}引用文章}{3}{section.5}%
